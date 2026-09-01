@@ -10,6 +10,11 @@ def require_login():
         if session.get("user_id") is None:
             return redirect("/login")
 
+@app.route("/logout")
+def logout():
+    session.pop("user_id", None)
+    return redirect("/login")
+
 @app.route("/")
 def index():
 
@@ -28,6 +33,13 @@ def register():
         password = request.form.get("password")
 
         connection = sqlite3.connect("shipsafe.db")
+
+        name = connection.execute("SELECT username FROM users WHERE username = ?", (username,)).fetchone()
+
+        if name is not None:
+            connection.close()
+            return render_template("register.html", error="Username already exists")
+
         connection.execute(
             "INSERT INTO users (username, password) VALUES (?, ?)",
             (username, password))
@@ -75,6 +87,9 @@ def projects():
     if request.method == "POST":
         project_name = request.form.get("project_name")
 
+        if not project_name:
+            return render_template("projects.html", error="Project name is required")
+
         connection = sqlite3.connect("shipsafe.db")
 
         connection.execute(
@@ -117,6 +132,7 @@ def create_flag(project_id):
     project = connection.execute("SELECT id FROM projects WHERE id = ? AND user_id = ?", (project_id, session["user_id"])).fetchone()
     
     if project is None:
+        connection.close()
         return render_template("projects.html", error="Project not found or you do not have permission to access it.")
     
     connection.execute("INSERT INTO flags (name, project_id) VALUES (?, ?)", (flag_name, project_id))
