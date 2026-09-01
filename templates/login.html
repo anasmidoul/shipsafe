@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShipSafe</title>
+</head>
+<body> 
+    <h1>Login</h1>
+    <form action="/login" method="post">
+        <input type="text" name="username" placeholder="Username" aria-label="Username">
+        <input type="password" name="password" placeholder="Password" aria-label="Password">
+        <button type="submit">Login</button>
+
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+        <p>
+            if you don't have an account, please <a href="/register">register</a>.
+        </p>
+    </form>
+</body>
+</html>

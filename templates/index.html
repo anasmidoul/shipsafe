@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShipSafe</title>
+</head>
+<body>
+
+    <h1>Welcome to ShipSafe</h1>
+    <p>ShipSafe is a feature flag management system that allows you to control the release of features in your applications. With ShipSafe, you can easily enable or disable features for specific users or groups, allowing for safer and more controlled feature rollouts.</p>
+
+    <p>Release features safely.</p>
+
+    <h2>Your projects</h2>
+
+    <ul>
+        {% for project in projects %}
+            <li>
+                <a href="/projects/{{ project[0] }}">
+                    {{ project[1] }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

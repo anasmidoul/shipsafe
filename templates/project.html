@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShipSafe</title>
+</head>
+<body>
+
+    <h1>{{ project[1] }}</h1>
+
+    <p>This is your project.</p>
+
+    <h3>Flags</h3>
+
+    {% for flag in flags %}
+        <p>{{ flag[1] }}</p>
+        <form action="/projects/{{ project[0] }}/flags/{{ flag[0] }}/delete" method="post">
+            <button type="submit">Delete</button> 
+        </form>
+        <form action="/projects/{{ project[0] }}/flags/{{ flag[0] }}/toggle" method="post">
+            <button type="submit" >
+                {% if flag[2] %}
+                    Disable
+                {% else %}
+                    Enable
+                {% endif %}
+            </button>
+        </form>
+    {% endfor %}
+
+    <h3>Create Flag</h3>
+    <form action="/projects/{{ project[0] }}/flags" method="post">
+        <input type="text" name="flag_name" placeholder="Flag name" aria-label="Flag name">
+        <button type="submit">Create Flag</button>
+    </form>
+
+    <a href="/">Back to dashboard</a>
+
+</body>
+</html>
