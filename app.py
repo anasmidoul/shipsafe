@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
 app = Flask(__name__)
@@ -33,6 +34,8 @@ def register():
 
         if not username or not password:
             return render_template("register.html", error="Username and password are required")
+
+        password = generate_password_hash(password)
 
         connection = sqlite3.connect("shipsafe.db")
 
@@ -70,12 +73,17 @@ def login():
             return render_template("login.html", error="Username and password are required")
 
         connection = sqlite3.connect("shipsafe.db")
+
         user = connection.execute(
-            "SELECT * FROM users WHERE username = ? AND password = ?",
-            (username, password)
+            "SELECT * FROM users WHERE username = ?",
+            (username,)
         ).fetchone()
 
         if user is None:
+            connection.close()
+            return render_template("login.html", error="Invalid username or password")
+
+        if not check_password_hash(user[2], password):
             connection.close()
             return render_template("login.html", error="Invalid username or password")
 
@@ -194,4 +202,6 @@ def delete_flag(project_id, flag_id):
     connection.close()
 
     return redirect(f"/projects/{project_id}")
-    
+
+if __name__ == "__main__":
+    app.run(debug=True)
