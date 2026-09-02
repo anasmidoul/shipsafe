@@ -25,12 +25,14 @@ def index():
 
     return render_template("index.html", projects=projects)
 
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+
+        if not username or not password:
+            return render_template("register.html", error="Username and password are required")
 
         connection = sqlite3.connect("shipsafe.db")
 
@@ -63,6 +65,9 @@ def login():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+
+        if not username or not password:
+            return render_template("login.html", error="Username and password are required")
 
         connection = sqlite3.connect("shipsafe.db")
         user = connection.execute(
@@ -115,6 +120,10 @@ def project(project_id):
         (project_id, session["user_id"])
     ).fetchone()
 
+    if project is None:
+        connection.close()
+        return render_template("projects.html", error="Project not found or you do not have permission to access it.")
+
     flags = connection.execute(
     "SELECT * FROM flags WHERE project_id = ?",
     (project_id,)
@@ -129,11 +138,21 @@ def create_flag(project_id):
     flag_name = request.form.get("flag_name")
 
     connection = sqlite3.connect("shipsafe.db")
+
     project = connection.execute("SELECT id FROM projects WHERE id = ? AND user_id = ?", (project_id, session["user_id"])).fetchone()
-    
+
     if project is None:
         connection.close()
         return render_template("projects.html", error="Project not found or you do not have permission to access it.")
+    
+    flags = connection.execute(
+        "SELECT * FROM flags WHERE project_id = ?",
+        (project_id,)
+        ).fetchall()
+
+    if not flag_name:
+        connection.close()
+        return render_template("project.html", flags=flags, project=project, error="Flag name is required")
     
     connection.execute("INSERT INTO flags (name, project_id) VALUES (?, ?)", (flag_name, project_id))
     connection.commit()
@@ -165,6 +184,7 @@ def toggle_flag(project_id, flag_id):
 @app.route("/projects/<int:project_id>/flags/<int:flag_id>/delete", methods=["POST"])
 def delete_flag(project_id, flag_id):
     connection = sqlite3.connect("shipsafe.db")
+
     deleted = connection.execute("DELETE FROM flags WHERE flags.id = ? AND flags.project_id = ? AND flags.project_id IN (SELECT id FROM projects WHERE user_id = ?)", (flag_id, project_id, session["user_id"]))
     if deleted.rowcount == 0:
         connection.close()
