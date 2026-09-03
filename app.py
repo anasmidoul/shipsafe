@@ -225,18 +225,25 @@ def get_flag(project_id, flag_name):
 
     connection = sqlite3.connect("shipsafe.db")
 
-    result = connection.execute("SELECT enabled FROM flags WHERE project_id = ? AND name = ?",(project_id, flag_name)).fetchone()
+    project_api_key = connection.execute(
+    "SELECT api_key FROM projects WHERE id = ?", (project_id,)).fetchone()
 
-    if not result:
-        return {"error": "Flag not found"}, 404
+    if not project_api_key:
+        connection.close()
+        return {"error": "Project not found"}, 404
 
-    if api_key != connection.execute("SELECT api_key FROM projects WHERE id = ?", (project_id,)).fetchone()[0]:
+    if api_key != project_api_key[0]:
+        connection.close()
         return {"error": "Invalid API key"}, 403
 
+    result = connection.execute("SELECT enabled FROM flags WHERE project_id = ? AND name = ?", (project_id, flag_name)).fetchone()
 
+    if not result:
+        connection.close()
+        return {"error": "Flag not found"}, 404
 
+    connection.close()
     return {"enabled": result[0]}
-
 
 if __name__ == "__main__":
     app.run(debug=True)
