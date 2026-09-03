@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     user_id INTEGER NOT NULL,
+    api_key TEXT,
     FOREIGN KEY (user_id) REFERENCES users (id)
 )
 """)

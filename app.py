@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
+import secrets
 
 app = Flask(__name__)
 app.secret_key = "your-secret-key"
 
 @app.before_request
 def require_login():
-    if request.endpoint != "login" and request.endpoint != "register":
+    if request.endpoint != "login" and request.endpoint != "register" and request.endpoint != "get_flag":
         if session.get("user_id") is None:
             return redirect("/login")
 
@@ -105,16 +106,24 @@ def projects():
 
         connection = sqlite3.connect("shipsafe.db")
 
+        project = connection.execute("SELECT * FROM projects WHERE name = ? AND user_id = ?", (project_name, session["user_id"])).fetchone()
+
+        if project:
+            connection.close()
+            return render_template("projects.html", error="Project already exists")
+
+        api_key = secrets.token_urlsafe(32)
+
         connection.execute(
-            "INSERT INTO projects (name, user_id) VALUES (?, ?) ",
-            (project_name, session["user_id"])
+            "INSERT INTO projects (name, user_id, api_key) VALUES (?, ?, ?)",
+            (project_name, session["user_id"], api_key)
         )
         connection.commit()
-        project_id = connection.execute("SELECT id FROM projects WHERE name = ? AND user_id = ?", (project_name, session["user_id"])).fetchone()[0]
+        project = connection.execute("SELECT * FROM projects WHERE name = ? AND user_id = ?", (project_name, session["user_id"])).fetchone()
 
         connection.close()
 
-        return redirect(f"/projects/{project_id}")
+        return redirect(f"/projects/{project[0]}")
 
     return render_template("projects.html")
 
@@ -125,10 +134,9 @@ def project(project_id):
 
     project = connection.execute(
         "SELECT * FROM projects WHERE id = ? AND user_id = ?",
-        (project_id, session["user_id"])
-    ).fetchone()
+        (project_id, session["user_id"])).fetchone()
 
-    if project is None:
+    if project is None: 
         connection.close()
         return render_template("projects.html", error="Project not found or you do not have permission to access it.")
 
@@ -139,7 +147,7 @@ def project(project_id):
 
     connection.close()
 
-    return render_template("project.html", project=project, flags=flags)
+    return render_template("project.html", project=project, flags=flags, api_key=project[3])
 
 @app.route("/projects/<int:project_id>/flags", methods=["POST"])
 def create_flag(project_id):
@@ -161,6 +169,7 @@ def create_flag(project_id):
     if not flag_name:
         connection.close()
         return render_template("project.html", flags=flags, project=project, error="Flag name is required")
+
     
     connection.execute("INSERT INTO flags (name, project_id) VALUES (?, ?)", (flag_name, project_id))
     connection.commit()
@@ -202,6 +211,32 @@ def delete_flag(project_id, flag_id):
     connection.close()
 
     return redirect(f"/projects/{project_id}")
+
+@app.route("/api/projects/<int:project_id>/flags/<flag_name>")
+def get_flag(project_id, flag_name):
+
+    api_key = request.headers.get("X-API-Key")
+
+    if not api_key:
+        return {"error": "API key is required"}, 401
+
+    if not project_id or not flag_name:
+        return {"error": "Project ID and flag name are required"}, 400
+
+    connection = sqlite3.connect("shipsafe.db")
+
+    result = connection.execute("SELECT enabled FROM flags WHERE project_id = ? AND name = ?",(project_id, flag_name)).fetchone()
+
+    if not result:
+        return {"error": "Flag not found"}, 404
+
+    if api_key != connection.execute("SELECT api_key FROM projects WHERE id = ?", (project_id,)).fetchone()[0]:
+        return {"error": "Invalid API key"}, 403
+
+
+
+    return {"enabled": result[0]}
+
 
 if __name__ == "__main__":
     app.run(debug=True)
