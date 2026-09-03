@@ -156,22 +156,22 @@ def create_flag(project_id):
 
     connection = sqlite3.connect("shipsafe.db")
 
-    project = connection.execute("SELECT id FROM projects WHERE id = ? AND user_id = ?", (project_id, session["user_id"])).fetchone()
+    flags = connection.execute("SELECT * FROM projects WHERE id = ? AND user_id = ?", (project_id, session["user_id"])).fetchall()
 
-    if project is None:
+    if flags[0] is None:
         connection.close()
         return render_template("projects.html", error="Project not found or you do not have permission to access it.")
-    
-    flags = connection.execute(
-        "SELECT * FROM flags WHERE project_id = ?",
-        (project_id,)
-        ).fetchall()
+
+    for flag in flags:
+        if flag[1] == flag_name:
+            connection.close()
+            return render_template("project.html", flags=flags, project=project, error="Flag already exists")
 
     if not flag_name:
         connection.close()
         return render_template("project.html", flags=flags, project=project, error="Flag name is required")
 
-    
+
     connection.execute("INSERT INTO flags (name, project_id) VALUES (?, ?)", (flag_name, project_id))
     connection.commit()
     connection.close()
