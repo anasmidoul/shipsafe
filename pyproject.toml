@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shipsafe-sdk"
+version = "0.1.0"
+dependencies = ["requests"]
+
+[tool.setuptools.packages.find]
+include = ["shipsafe_sdk*"]
