@@ -1,12 +1,13 @@
 import requests
 
 class ShipSafe:
-    def __init__(self, api_key, project_id):
+    def __init__(self, api_key, project_id, base_url="http://127.0.0.1:5000"):        
         self.api_key = api_key
         self.project_id = project_id
+        self.base_url = base_url
 
     def is_flag_enabled(self, flag_name):
-        url = f"http://127.0.0.1:5000/api/projects/{self.project_id}/flags/{flag_name}"
+        url = f"{self.base_url}/api/projects/{self.project_id}/flags/{flag_name}"        
         headers = {"X-API-Key": self.api_key}
         response = requests.get(url, headers=headers)
         try:
