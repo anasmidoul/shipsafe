@@ -1,8 +1,0 @@
-pyproject.toml
-shipsafe_sdk/__init__.py
-shipsafe_sdk/sdk.py
-shipsafe_sdk.egg-info/PKG-INFO
-shipsafe_sdk.egg-info/SOURCES.txt
-shipsafe_sdk.egg-info/dependency_links.txt
-shipsafe_sdk.egg-info/requires.txt
-shipsafe_sdk.egg-info/top_level.txt
