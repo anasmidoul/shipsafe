@@ -2,9 +2,10 @@ from flask import Flask, render_template, request, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import secrets
+import os
 
 app = Flask(__name__)
-app.secret_key = "your-secret-key"
+app.secret_key = os.environ.get("SECRET_KEY")
 
 @app.before_request
 def require_login():
