@@ -4,45 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShipSafe</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <div class="container">
 
     <h1>{{ project[1] }}</h1>
 
     <p>This is your project.</p>
 
-    <h3>Flags</h3>
+    <div class="card">
 
-    {% for flag in flags %}
-        <p>{{ flag[1] }}</p>
-        <form action="/projects/{{ project[0] }}/flags/{{ flag[0] }}/delete" method="post">
-            <button type="submit">Delete</button> 
-        </form>
-        <form action="/projects/{{ project[0] }}/flags/{{ flag[0] }}/toggle" method="post">
-            <button type="submit" >
+        <h3>Flags</h3>
+
+        {% for flag in flags %}
+        <div class="flag">
+            <div>
+                <strong>{{ flag[1] }}</strong>
+
                 {% if flag[2] %}
-                    Disable
+                    <span>Enabled</span>
                 {% else %}
-                    Enable
+                    <span>Disabled</span>
                 {% endif %}
-            </button>
-        </form>
+            </div>
+            <div>
+            <form action="/projects/{{ project[0] }}/flags/{{ flag[0] }}/delete" method="post">
+                <button type="submit">Delete</button>
+
+            </form>
+                <form action="/projects/{{ project[0] }}/flags/{{ flag[0] }}/toggle" method="post">
+                    <button type="submit">
+                        {% if flag[2] %}
+                            Disable
+                        {% else %}
+                            Enable
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
     {% endfor %}
+
+    <div class="card">
 
     <h3>Create Flag</h3>
     <form action="/projects/{{ project[0] }}/flags" method="post">
         <input type="text" name="flag_name" placeholder="Flag name" aria-label="Flag name">
         <button type="submit">Create Flag</button>
     </form>
+    </div>
 
     {% if error %}
-        <p style="color: red;">{{ error }}</p>
+        <p class="error">{{ error }}</p>
     {% endif %}
 
     <a href="/">Back to dashboard</a>
 
-    <h2>Api Key</h2>
-    {{ api_key }}
+    <div class="card">
+        <h2>Api Key</h2>
+        {{ api_key }}
+    </div>
 
+</div>
 </body>
 </html>
