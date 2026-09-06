@@ -77,3 +77,7 @@ else:
 ## How It Works
 
 ShipSafe provides a dashboard where developers can create projects and feature flags. Each project has an API key that can be used to check feature flag status through the ShipSafe API or Python SDK.
+
+## Demo
+
+[Watch the ShipSafe demo](YOUR_YOUTUBE_URL)
