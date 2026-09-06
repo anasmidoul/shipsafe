@@ -21,27 +21,22 @@
         <div class="flag">
             <div>
                 <strong>{{ flag[1] }}</strong>
-
-                {% if flag[2] %}
-                    <span>Enabled</span>
-                {% else %}
-                    <span>Disabled</span>
-                {% endif %}
             </div>
             <div>
-            <form action="/projects/{{ project[0] }}/flags/{{ flag[0] }}/delete" method="post">
+            <form class="delete-flag" action="/projects/{{ project[0] }}/flags/{{ flag[0] }}/delete" method="post">
                 <button type="submit">Delete</button>
-
             </form>
-                <form action="/projects/{{ project[0] }}/flags/{{ flag[0] }}/toggle" method="post">
+
+                <form class="toggle-flag" action="/projects/{{ project[0] }}/flags/{{ flag[0] }}/toggle" method="post">
                     <button type="submit">
                         {% if flag[2] %}
-                            Disable
+                        Disable
                         {% else %}
-                            Enable
+                        Enable
                         {% endif %}
                     </button>
                 </form>
+
             </div>
         </div>
     {% endfor %}
@@ -62,10 +57,11 @@
     <a href="/">Back to dashboard</a>
 
     <div class="card">
-        <h2>Api Key</h2>
-        {{ api_key }}
+        <h2>API Key</h2>
+        <p id="api-key">{{ api_key }}</p>
+        <button type="button" id="copy-api-key">Copy API Key</button>
     </div>
-
-</div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

@@ -6,23 +6,25 @@
     <title>ShipSafe</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body> 
-    <div class="container"> 
-    <h1>Register</h1>
-        <form action="/register" method="post">
-        <input type="text" name="username" placeholder="Username" aria-label="Username">
-        <input type="password" name="password" placeholder="Password" aria-label="Password">
-        <button type="submit">Register</button>
-    </form>
-    
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
+<body>
+    <div class="container">
+        <div class="card">
 
-    <p>
-        if you don't have an account, please <a href="/login">login</a>.
-    </p>
+            <h1>Register</h1>
+                <form action="/register" method="post">
+                <input type="text" name="username" placeholder="Username" aria-label="Username">
+                <input type="password" name="password" placeholder="Password" aria-label="Password">
+                <button type="submit">Register</button>
+            </form>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <p>
+                If you don't have an account, please <a href="/login">login</a>.
+            </p>
+            </div>
     </div>
-
 </body>
 </html>

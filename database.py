@@ -15,8 +15,9 @@ CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     user_id INTEGER NOT NULL,
-    api_key TEXT,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    api_key TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    UNIQUE (user_id, name)
 )
 """)
 
@@ -26,7 +27,8 @@ CREATE TABLE IF NOT EXISTS flags (
     name TEXT NOT NULL,
     enabled INTEGER NOT NULL DEFAULT 0,
     project_id INTEGER NOT NULL,
-    FOREIGN KEY (project_id) REFERENCES projects (id)
+    FOREIGN KEY (project_id) REFERENCES projects (id),
+    UNIQUE (project_id, name)
 )
 """)
 

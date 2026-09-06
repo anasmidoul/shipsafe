@@ -8,18 +8,20 @@
 </head>
 <body>
     <div class="container"> 
-            <h1>Login</h1>
-            <form action="/login" method="post">
-                <input type="text" name="username" placeholder="Username" aria-label="Username">
-                <input type="password" name="password" placeholder="Password" aria-label="Password">
-                <button type="submit">Login</button>
-                {% if error %}
-                    <p class="error">{{ error }}</p>
-                {% endif %}
-            </form>
-            <p>
-                if you don't have an account, please <a href="/register">register</a>.
-            </p>
+        <div class="card">
+                <h1>Login</h1>
+                <form action="/login" method="post">
+                    <input type="text" name="username" placeholder="Username" aria-label="Username">
+                    <input type="password" name="password" placeholder="Password" aria-label="Password">
+                    <button type="submit">Login</button>
+                    {% if error %}
+                        <p class="error">{{ error }}</p>
+                    {% endif %}
+                </form>
+                <p>
+                    if you don't have an account, please <a href="/register">register</a>.
+                </p>
+        </div>
     </div>
 </body>
 </html>
