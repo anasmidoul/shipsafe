@@ -80,4 +80,6 @@ ShipSafe provides a dashboard where developers can create projects and feature f
 
 ## Demo
 
-[Watch the ShipSafe demo](YOUR_YOUTUBE_URL)
+[Watch the ShipSafe demo](https://youtu.be/PKwlmm_qhew)
+
+ShipSafe — Anas — CS50 Final Project — 2026
