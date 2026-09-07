@@ -1,3 +1,8 @@
+# AI assistance:
+# ChatGPT (OpenAI) was used during development to explain concepts,
+# help debug errors, suggest improvements, and review code.
+# The final project was implemented, tested, and understood by the author.
+
 from flask import Flask, render_template, request, redirect, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
