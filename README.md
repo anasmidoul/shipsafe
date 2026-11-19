@@ -156,4 +156,4 @@ The Python SDK was added to make the API easier to use from Python applications.
 
 [Watch the ShipSafe demo](https://youtu.be/c66Rpc2iatA)
 
-ShipSafe — Anas — CS50 Final Project — 2026
+ShipSafe — Anas — CS50x Final Project — 2026
